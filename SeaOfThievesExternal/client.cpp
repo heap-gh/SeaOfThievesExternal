@@ -48,6 +48,8 @@ void Client::init() {
 	std::cout << "ID: " << std::dec << p.t_Players.at(0).getId() << "\n";
 	std::cout << p.getShipTemplate() << "\n";
 
+	//test
+
 	/*
 
 	for (int x = 0; x < p_UWorld->t_Levels.size(); x++) {
@@ -213,5 +215,13 @@ void Client::update() {
 		
 
 	}
+
+}
+
+
+void someRandomFunction() {
+
+
+
 
 }
