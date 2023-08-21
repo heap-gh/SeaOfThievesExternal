@@ -15,11 +15,12 @@ UWorld::UWorld(UINT_PTR p_address) {
 
 UWorld::~UWorld() {
 
-
+	delete this->p_UGameInstance;
+	delete this->p_AAthenaGameState;
 
 }
 
-
+/*
 void UWorld::updateLocalPlayer() {
 
 	std::string localname = this->p_UGameInstance->t_LocalPlayers.at(0).PlayerController.Pawn.PlayerState.getName();
@@ -90,6 +91,8 @@ void UWorld::updateActors() {
 	this->t_Levels.update(); 
 	this->p_UGameInstance->t_LocalPlayers.update();
 
+	std::cout << "MF: " << std::hex << this->t_Levels.d_dataptr << "   ";
+
 	for (int x = 0; x < this->t_Levels.size(); x++) {
 
 		try {
@@ -141,7 +144,7 @@ void UWorld::updateCrewId() {
 
 }
 
-
+*/
 
 bool UWorld::isLocalPlayer(AActor& actor) {
 
@@ -202,7 +205,7 @@ void UWorld::deleteElementByIndex(std::vector<T>& vec, size_t index) {
 
 }
 
-
+/*
 
 void UWorld::updateWorld() {
 
@@ -219,9 +222,13 @@ void UWorld::updateWorld() {
 		this->p_UGameInstance = new UGameInstance(this->d_address + Offsets::UWorld::OwningWorldInstance);
 	}
 
+
+	if (this->t_Levels.isDeleted())
+		this->t_Levels = TArray<ULevel>(this->d_address + Offsets::UWorld::Levels, 0x8);
+
 }
 
-
+*/
 
 bool UWorld::isDeleted() {
 

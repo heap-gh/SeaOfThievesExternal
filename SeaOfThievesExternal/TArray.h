@@ -85,8 +85,6 @@ public:
 
 		this->data.clear();
 
-		this->d_dataptr = Driver::read<UINT_PTR>(this->address);
-
 			for (int x = 0; x < size(); x++) {
 				this->data.push_back(T(this->d_dataptr + x * this->data_size));
 			}
@@ -104,6 +102,16 @@ public:
 
 		return false;
 	}
+
+	bool isDeleted() {
+
+		if (Driver::read<UINT_PTR>(this->address) != this->d_dataptr)
+			return true;
+
+		return false;
+
+	}
+
 
 
 };

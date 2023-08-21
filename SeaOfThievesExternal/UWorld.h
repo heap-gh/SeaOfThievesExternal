@@ -49,14 +49,7 @@ public:
 	void deleteElementByIndex(std::vector<T>& vec, size_t index);
 	bool isDeleted();
 
-	// caching
-
-	void updateCrewId();
-	void updateActors();
-	void updateLocalPlayer();
-	void updateLocalCrew();
-	void updateEnemies();
-	void updateWorld();
+	
 
 };
 
