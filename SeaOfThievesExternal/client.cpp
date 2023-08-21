@@ -32,7 +32,10 @@ void Client::init() {
 	GNames::d_address = Driver::read<UINT_PTR>(Driver::base_address + Offsets::Process::GNames);
 
 	this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
-	this->aimbot = new Aimbot(this->p_UWorld);
+	
+	AimbotSettings settings;
+
+	this->p_Aimbot = new Aimbot(this->p_UWorld, settings);
 		
 	std::cout << "GNAMES ADDR: " << std::hex << GNames::d_address << "\n";
 	std::cout << "PROCID: " << Driver::process_id << "\nBASEADDR: " << std::hex << Driver::base_address << "\n";
@@ -86,6 +89,7 @@ void Client::init() {
 }
 
 
+// testing threads
 void Client::testing() {
 	
 	while (true) {
@@ -222,8 +226,6 @@ void Client::extremeSlowCache() {
 
 void Client::update() {
 
-	
-
 		this->fastCache_lock.lock();
 		this->slowCache_lock.lock();
 		this->extremeSlowCache_lock.lock();
@@ -231,6 +233,7 @@ void Client::update() {
 		if (Driver::read<UINT_PTR>(Driver::base_address + Offsets::Process::UWorld) != this->p_UWorld->d_address) {
 			delete this->p_UWorld;
 			this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
+			this->p_Aimbot->p_UWorld = this->p_UWorld;
 		}
 
 		if (this->p_UWorld->p_UGameInstance->d_address != Driver::read<UINT_PTR>(this->p_UWorld->d_address + Offsets::UWorld::OwningWorldInstance)) {
@@ -247,14 +250,12 @@ void Client::update() {
 			this->p_UWorld->t_Levels = TArray<ULevel>(this->p_UWorld->d_address + Offsets::UWorld::Levels, 0x8);
 		}
 
-
 		this->fastCache_lock.unlock();
 		this->slowCache_lock.unlock();
 		this->extremeSlowCache_lock.unlock();
 
 		//Sleep(1000);
 
-	
 }
 
 
@@ -335,7 +336,6 @@ void Client::updateActors() {
 
 	for (int x = 0; x < this->p_UWorld->t_Levels.size(); x++) {
 		
-
 		try {
 
 			if (this->p_UWorld->t_Levels.at(x).t_Actors.size() > 15000) {
@@ -359,6 +359,7 @@ void Client::updateActors() {
 
 	}
 	//std::cout << "for2 end\n";
+
 }
 
 
@@ -377,6 +378,7 @@ void Client::updateCrewId() {
 				this->p_UWorld->c_LocalCrewId = this->p_UWorld->p_AAthenaGameState->p_ACrewService.t_Crews.at(x).CrewId;
 
 			}
+
 		}
 	}
 

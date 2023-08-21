@@ -17,7 +17,7 @@ public:
 	std::mutex extremeSlowCache_lock;
 
 	UWorld* p_UWorld = nullptr;
-	Aimbot* aimbot = nullptr;
+	Aimbot* p_Aimbot = nullptr;
 
 
 public:
