@@ -109,7 +109,7 @@ void Client::start() {
 	while (true) {
 
 		if (!show)
-			std::cout << std::hex <<this->p_UWorld->d_address << "    " << this->p_UWorld->t_Levels.d_dataptr << "\n";
+			std::cout << std::hex << this->p_UWorld->c_LocalPlayer.d_address << "\n";
 		
 		if (GetAsyncKeyState(VK_NUMPAD1) & 1)
 			show = !show;
@@ -233,7 +233,7 @@ void Client::update() {
 		if (Driver::read<UINT_PTR>(Driver::base_address + Offsets::Process::UWorld) != this->p_UWorld->d_address) {
 			delete this->p_UWorld;
 			this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
-			this->p_Aimbot->p_UWorld = this->p_UWorld;
+			this->p_Aimbot->setWorld(this->p_UWorld);
 		}
 
 		if (this->p_UWorld->p_UGameInstance->d_address != Driver::read<UINT_PTR>(this->p_UWorld->d_address + Offsets::UWorld::OwningWorldInstance)) {

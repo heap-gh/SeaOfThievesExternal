@@ -41,7 +41,8 @@ public:
 	void init(AimbotSettings settings);
 	void start();
 	void updateSettings(AimbotSettings settings);
-	
+	void setWorld(UWorld* ptr);
+
 	AActor getTarget();
 	bool isScoped();
 

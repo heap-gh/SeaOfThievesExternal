@@ -24,6 +24,8 @@ public:
 	USceneComponent(UINT_PTR p_address);
 
 	FVector getCoords();
+	FVector getVelocity();
+
 
 };
 

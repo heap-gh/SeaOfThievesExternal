@@ -1,5 +1,18 @@
 #pragma once
 
+/*
+
+TODO: - Code AShip Class
+	  - Cache all Ships
+
+	  https://www.unknowncheats.me/forum/sea-of-thieves/518541-velocity-ship.html
+
+	  - Get Velocity of Player
+
+
+*/
+
+
 
 /*
 

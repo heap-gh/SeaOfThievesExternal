@@ -10,6 +10,13 @@ Aimbot::Aimbot(UWorld* p_UWorld, AimbotSettings settings) {
 }
 
 
+void Aimbot::setWorld(UWorld* world) {
+
+	this->p_UWorld = world;
+}
+
+
+
 void Aimbot::init(AimbotSettings settings) {
 
 	this->settings = settings;
@@ -38,12 +45,11 @@ AActor Aimbot::getTarget() {
 
 
 
-
+	return AActor();
 }
 
 bool Aimbot::isScoped() {
 
 
-
-
+	return false;
 }
