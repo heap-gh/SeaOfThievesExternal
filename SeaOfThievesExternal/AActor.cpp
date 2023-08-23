@@ -10,6 +10,8 @@ AActor::AActor(UINT_PTR p_address) {
 
 	this->Pawn = APawn(this->d_address + Offsets::AActor::Instigator);
 
+	this->c_ActorID = Driver::read<UINT32>(this->d_address + Offsets::AActor::ActorID);
+
 	this->isInitialized = true;
 }
 
@@ -29,9 +31,11 @@ std::string AActor::getClassName() {
 
 bool AActor::isDeleted() {
 
-	if (Driver::read<UINT_PTR>(this->p_address) != this->d_address) {
+	if (Driver::read<UINT_PTR>(this->p_address) != this->d_address) 
 		return true;
-	}
+	
+	if (Driver::read<UINT32>(this->d_address + Offsets::AActor::ActorID) != this->c_ActorID)
+		return true;
 
 	return false;
 }

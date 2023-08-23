@@ -31,6 +31,8 @@ public:
 	AActor() { }
 	AActor(UINT_PTR p_address);
 
+	UINT32 c_ActorID = 0;
+
 
 	UINT32		getID();
 	std::string getClassName();
