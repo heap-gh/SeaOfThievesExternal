@@ -36,6 +36,7 @@ public:
 	std::string getClassName();
 	bool		isDeleted();
 
+
 };
 
 

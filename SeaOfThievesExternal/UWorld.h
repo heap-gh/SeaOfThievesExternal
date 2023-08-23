@@ -13,6 +13,7 @@
 #include "AAthenaGameState.h"
 #include "UGameInstance.h"
 
+
 class UWorld {
 
 public:
@@ -22,9 +23,9 @@ public:
 	UINT_PTR p_address;
 	UINT_PTR d_address;
 
-	UGameInstance* p_UGameInstance;
-	AAthenaGameState* p_AAthenaGameState;
-	TArray<ULevel> t_Levels;
+	UGameInstance* p_UGameInstance = nullptr;
+	AAthenaGameState* p_AAthenaGameState = nullptr;
+	TArray<ULevel>* t_Levels = nullptr;
 
 	// CACHED DATA
 
@@ -49,7 +50,7 @@ public:
 	void deleteElementByIndex(std::vector<T>& vec, size_t index);
 	bool isDeleted();
 
-	
+	void update(UINT_PTR new_p_address);
 
 };
 

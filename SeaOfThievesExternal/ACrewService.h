@@ -16,10 +16,13 @@ public:
 
 public:
 
-	TArray<FCrew> t_Crews;
+	TArray<FCrew>* t_Crews = nullptr;
 
 	ACrewService() { }
 	ACrewService(UINT_PTR p_address);
+	~ACrewService();
+
+	void update(UINT_PTR new_p_address);
 
 };
 

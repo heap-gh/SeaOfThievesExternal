@@ -65,9 +65,15 @@ public:
 	}
 
 
-	int size() {
+	INT32 size() {
 
-		return Driver::read<INT32>(this->address + 0x8);
+		INT32 size = Driver::read<INT32>(this->address + 0x8);
+
+		if (size > 20000)
+			return 0;
+
+		return size;
+
 	}
 
 
@@ -80,15 +86,22 @@ public:
 
 		return at(idx);
 	}
+
+	void update(UINT_PTR new_p_address) {
+		this->address = new_p_address;
+		this->d_dataptr = Driver::read<UINT_PTR>(this->address);
+	}
+
 	
 	void update() {
 
 		this->data.clear();
 
-			for (int x = 0; x < size(); x++) {
-				this->data.push_back(T(this->d_dataptr + x * this->data_size));
-			}
-		
+		this->d_dataptr = Driver::read<UINT_PTR>(this->address);
+
+		for (int x = 0; x < size(); x++) {
+			this->data.push_back(T(this->d_dataptr + x * this->data_size));
+		}
 
 	}
 

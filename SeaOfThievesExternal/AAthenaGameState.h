@@ -1,29 +1,35 @@
 #pragma once
 
-#ifndef GAMESTATE_H
-#define GAMESTATE_H
+#ifndef AATHENAGAMESTATE_H
+#define AATHENAGAMESTATE_H
 
 #include "includes.h"
 #include "ACrewService.h"
 
-class AAthenaGameState {
+
+class AAthenaGameState  {
 
 public:
+	
+	bool initialized = false;
 
 	UINT_PTR p_address;
 	UINT_PTR d_address;
-	
-	ACrewService p_ACrewService;
+
+	ACrewService* p_ACrewService = nullptr;
 
 
 public:
 
-	AAthenaGameState() {  }
+	AAthenaGameState();
 	AAthenaGameState(UINT_PTR p_address);
+	~AAthenaGameState();
+
 	
 	bool isDeleted();
+	void update(UINT_PTR new_p_address);
 
 };
 
 
-#endif // !GAMESTATE_H
+#endif // !AATHENAGAMESTATE_H

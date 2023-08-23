@@ -142,6 +142,7 @@
     <ClInclude Include="FCrew.h" />
     <ClInclude Include="FGuid.h" />
     <ClInclude Include="FString.h" />
+    <ClInclude Include="AGameState.h" />
     <ClInclude Include="GNames.h" />
     <ClInclude Include="handledisposer.h" />
     <ClInclude Include="includes.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="FCrew.cpp" />
     <ClCompile Include="FGuid.cpp" />
     <ClCompile Include="FString.cpp" />
+    <ClCompile Include="AGameState.cpp" />
     <ClCompile Include="GNames.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />

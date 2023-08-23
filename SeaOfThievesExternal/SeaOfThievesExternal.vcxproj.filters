@@ -21,10 +21,6 @@
     <Filter Include="Source Files\util">
       <UniqueIdentifier>{bc8f3b50-19b8-4c00-8d6c-8d06329f0f40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SDK\Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aimbot.h">
@@ -108,6 +104,9 @@
     <ClInclude Include="drivercom.h">
       <Filter>Header Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="AGameState.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -171,6 +170,9 @@
       <Filter>Source Files\util</Filter>
     </ClCompile>
     <ClCompile Include="AActor.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="AGameState.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>

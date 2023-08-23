@@ -252,6 +252,79 @@ namespace Offsets
 		constexpr auto LastControlInputVector = 0x42c; // FVector
 	}
 
+	namespace UWieldedItemComponent
+	{
+		constexpr auto WieldableItemSetComponent = 0x2e0; // UWieldableItemSetComponent*
+		constexpr auto ReplicatedCurrentlyWieldedItem = 0x2e8; // AActor*
+		constexpr auto CurrentlyWieldedItem = 0x2f0; // AActor*
+		constexpr auto EpochId = 0x410; // int32_t
+		constexpr auto PendingServerWieldSet = 0x420; // FServerWieldSet
+	}
+
+
+	namespace AAthenaCharacter
+	{
+		constexpr auto LookAtOffsetComponent = 0x708; // ULookAtOffsetComponent*
+		constexpr auto AnimationDataStoreAsset = 0x710; // UAnimationDataStoreAsset*
+		constexpr auto SittingAnimationDataAssets = 0x718; // UAthenaAnimationSittingDataAsset*
+		constexpr auto AthenaCharacterMovementComponent = 0x720; // UAthenaCharacterMovementComponent*
+		constexpr auto Docker = 0x730; // FDocker
+		constexpr auto ActionStateMachineComponent = 0x7c0; // UActionStateMachineComponent*
+		constexpr auto ActionStatePriorityTableData = 0x7c8; // UActionStatePriorityTableData*
+		constexpr auto ActionStateCreatorDefinition = 0x7d0; // AActionStateCreatorDefinition*
+		constexpr auto ObjectMessageDispatcher = 0x7d8; // FObjectMessagingDispatcher
+		constexpr auto WieldableItemSetComponent = 0x878; // UWieldableItemSetComponent*
+		constexpr auto WieldedItemComponent = 0x880; // UWieldedItemComponent*
+		constexpr auto MeshAdjustmentComponent = 0x888; // USceneComponent*
+		constexpr auto InventoryManipulatorComponent = 0x890; // UInventoryManipulatorComponent*
+		constexpr auto LoadoutComponent = 0x898; // ULoadoutComponent*
+		constexpr auto ItemLoadoutComponent = 0x8a0; // UItemLoadoutComponent*
+		constexpr auto HealthComponent = 0x8a8; // UHealthComponent*
+		constexpr auto StateManagerComponent = 0x8b0; // UAthenaCharacterStateManagerComponent*
+		constexpr auto RewindComponent = 0x8b8; // URewindComponent*
+		constexpr auto ActorDamageableComponent = 0x8c0; // UActorDamageableComponent*
+		constexpr auto CharacterHitReactionComponent = 0x8c8; // UCharacterHitReactionComponent*
+		constexpr auto AnimNotifyWwiseEmitterComponent = 0x8d0; // UAnimNotifyWwiseEmitterComponent*
+		constexpr auto MeleeAttackProcessor = 0x8d8; // UMeleeAttackProcessorComponent*
+		constexpr auto HitDetectionComponent = 0x8e0; // UHitDetectionComponent*
+		constexpr auto KnockBackComponent = 0x8e8; // UAthenaCharacterKnockbackComponent*
+		constexpr auto DodgeComponent = 0x8f0; // UAthenaCharacterDodgeComponent*
+		constexpr auto CharacterAINoiseEventComponent = 0x8f8; // UCharacterAINoiseEventComponent*
+		constexpr auto PrivateActionRulesComponent = 0x900; // UActionRulesComponent*
+		constexpr auto ShipTrackerComponent = 0x908; // UShipTrackerComponent*
+		constexpr auto WatercraftTrackerComponent = 0x910; // UWatercraftTrackerComponent*
+		constexpr auto ItemLoaderComponent = 0x918; // UItemLoaderComponent*
+		constexpr auto RetractableCharacterComponent = 0x920; // URetractableCharacterComponent*
+		constexpr auto ResourceProviderComponent = 0x928; // UResourceProviderComponent*
+		constexpr auto CharacterFlammableComponent = 0x930; // UCharacterFlammableComponent*
+		constexpr auto SoakableComponent = 0x938; // USoakableComponent*
+		constexpr auto WaterExposureComponent = 0x940; // UWaterExposureComponent*
+		constexpr auto ShelteredComponent = 0x948; // UShelteredComponent*
+		constexpr auto BoxedRpcDispatcherComponent = 0x950; // UBoxedRpcDispatcherComponent*
+		constexpr auto CosmeticItemAnimationComponent = 0x958; // UCosmeticItemAnimationComponent*
+		constexpr auto InteractionPreventionComponent = 0x960; // UInteractionPreventionComponent*
+		constexpr auto DeathCustomisation = 0x968; // UDeathCustomisationComponent*
+		constexpr auto OnJumpedDelegate = 0x970; // FScriptMulticastDelegate
+		constexpr auto InterferenceComponent = 0x990; // UMovementInterferenceComponent*
+		constexpr auto WaterInteractionComponent = 0x998; // UWaterInteractionComponent*
+		constexpr auto ThirdPersonAnimSetDataId = 0x9a0; // UAnimationDataStoreId*
+		constexpr auto OverrideEncroachesBlockingGeometry = 0x9a8; // bool
+		constexpr auto OverrideEncroachesBlockingGeometryChannel = 0x9a9; // ECollisionChannel
+		constexpr auto OverrideFloorSweepCollisionProfileName = 0x9ac; // FName
+		constexpr auto MovementThresholdToRecordRewindTransform = 0x9d4; // float
+		constexpr auto SpawnAnimIndex = 0x9e4; // int32_t
+		constexpr auto AnimationDataStore = 0xa58; // UAnimationDataStore*
+		constexpr auto OldPlayerState = 0xaa0; // APlayerState*
+		constexpr auto RelativeTargetYawOnMovingBase = 0xae4; // float
+		constexpr auto SmoothYawOnMovingBaseTime = 0xb18; // float
+		constexpr auto RandomAnimationSeed = 0xb1c; // int32_t
+		constexpr auto RandomBool = 0xb28; // bool
+		constexpr auto CameraSocket = 0xb50; // USkeletalMeshSocket*
+		constexpr auto RegisteredInputComponents = 0xba0; // TArray<UInputComponent*>
+	}
+
+
+
 
 };
 

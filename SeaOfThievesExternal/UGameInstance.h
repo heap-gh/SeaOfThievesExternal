@@ -18,14 +18,16 @@ public:
 	UINT_PTR p_address;
 	UINT_PTR d_address;
 
-	TArray<ULocalPlayer> t_LocalPlayers;
+	TArray<ULocalPlayer>* t_LocalPlayers = nullptr;
 
 public:
 
 	UGameInstance(){ }
 	UGameInstance(UINT_PTR p_address);
-	
+	~UGameInstance();
+
 	bool isDeleted();
+	void update(UINT_PTR new_p_address);
 
 };
 

@@ -29,8 +29,9 @@ std::string AActor::getClassName() {
 
 bool AActor::isDeleted() {
 
-	if (Driver::read<UINT_PTR>(this->p_address) != this->d_address)
+	if (Driver::read<UINT_PTR>(this->p_address) != this->d_address) {
 		return true;
+	}
 
 	return false;
 }
