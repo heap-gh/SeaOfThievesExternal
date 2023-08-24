@@ -28,6 +28,7 @@ public:
 	void init();
 	void start();
 	void update();
+	void initLocalPlayer();
 
 	void testing();
 
@@ -35,6 +36,7 @@ public:
 	void fastCache();
 	void slowCache();
 	void extremeSlowCache();
+	void worldCache();
 
 	// caching
 
@@ -43,7 +45,8 @@ public:
 	void updateLocalPlayer();
 	void updateLocalCrew();
 	void updateEnemies();
-
+	
+	void updateActorsTest();
 
 
 };

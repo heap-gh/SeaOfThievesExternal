@@ -18,8 +18,6 @@ class AActor {
 
 public:
 
-	bool isInitialized = false;
-
 	UINT_PTR p_address;
 	UINT_PTR d_address;
 
@@ -30,6 +28,8 @@ public:
 
 	AActor() { }
 	AActor(UINT_PTR p_address);
+	
+
 
 	UINT32 c_ActorID = 0;
 
@@ -37,7 +37,7 @@ public:
 	UINT32		getID();
 	std::string getClassName();
 	bool		isDeleted();
-
+	void		update(UINT_PTR new_p_address);
 
 };
 

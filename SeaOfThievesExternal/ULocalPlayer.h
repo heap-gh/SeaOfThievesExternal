@@ -25,6 +25,7 @@ public:
 	ULocalPlayer() { }
 	ULocalPlayer(UINT_PTR p_address);
 
+	void update(UINT_PTR new_p_address);
 
 
 };

@@ -32,6 +32,9 @@ void UGameInstance::update(UINT_PTR new_p_address) {
 	this->p_address = new_p_address;
 	this->d_address = Driver::read<UINT_PTR>(this->p_address);
 
-	// Update TArray
+	if (this->t_LocalPlayers != nullptr)
+		this->t_LocalPlayers->update(this->d_address + Offsets::UGameInstance::LocalPlayers);
+	else
+		this->t_LocalPlayers = new TArray<ULocalPlayer>(this->d_address + Offsets::UGameInstance::LocalPlayers, 0x8);
 
 }

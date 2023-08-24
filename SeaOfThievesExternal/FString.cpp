@@ -12,7 +12,13 @@ FString::FString(UINT_PTR p_address) {
 
 UINT32 FString::size() {
 
- 	return Driver::read<UINT32>(this->p_address + 0x8);
+	UINT32 size = Driver::read<UINT32>(this->p_address + 0x8);
+
+	if (size > 1000)
+		return 0;
+
+	return size;
+
 }
 
 

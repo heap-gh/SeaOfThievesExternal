@@ -21,6 +21,12 @@
     <Filter Include="Source Files\util">
       <UniqueIdentifier>{bc8f3b50-19b8-4c00-8d6c-8d06329f0f40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SDK-Testfiles">
+      <UniqueIdentifier>{4a1699e8-1f59-47a4-bab1-75a2cfd076f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SDK-Testfiles">
+      <UniqueIdentifier>{5fdc9240-78f9-44c1-97e1-0b5cbc409237}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aimbot.h">
@@ -107,6 +113,15 @@
     <ClInclude Include="AGameState.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="UWieldedItemComponent.h">
+      <Filter>Header Files\SDK-Testfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileWeapon.h">
+      <Filter>Header Files\SDK-Testfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="AAthenaCharacter.h">
+      <Filter>Header Files\SDK-Testfiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -174,6 +189,15 @@
     </ClCompile>
     <ClCompile Include="AGameState.cpp">
       <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="UWieldedItemComponent.cpp">
+      <Filter>Source Files\SDK-Testfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileWeapon.cpp">
+      <Filter>Source Files\SDK-Testfiles</Filter>
+    </ClCompile>
+    <ClCompile Include="AAthenaCharacter.cpp">
+      <Filter>Source Files\SDK-Testfiles</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

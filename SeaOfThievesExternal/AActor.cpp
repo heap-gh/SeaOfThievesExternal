@@ -12,8 +12,23 @@ AActor::AActor(UINT_PTR p_address) {
 
 	this->c_ActorID = Driver::read<UINT32>(this->d_address + Offsets::AActor::ActorID);
 
-	this->isInitialized = true;
 }
+
+
+
+void AActor::update(UINT_PTR new_p_address) {
+
+	this->p_address = new_p_address;
+	this->d_address = Driver::read<UINT_PTR>(this->p_address);
+
+	this->RootComponent = USceneComponent(this->d_address + Offsets::AActor::RootComponent);
+
+	this->Pawn = APawn(this->d_address + Offsets::AActor::Instigator);
+
+	this->c_ActorID = Driver::read<UINT32>(this->d_address + Offsets::AActor::ActorID);
+
+}
+
 
 
 UINT32 AActor::getID() {
@@ -36,6 +51,8 @@ bool AActor::isDeleted() {
 	
 	if (Driver::read<UINT32>(this->d_address + Offsets::AActor::ActorID) != this->c_ActorID)
 		return true;
+
+
 
 	return false;
 }

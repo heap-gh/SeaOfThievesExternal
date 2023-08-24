@@ -44,13 +44,15 @@ UWorld::~UWorld() {
 	delete this->p_UGameInstance;
 	delete this->p_AAthenaGameState;
 	delete this->t_Levels;
+	delete this->c_LocalPlayer;
+	delete this->c_LocalActor;
 
 }
 
 
 bool UWorld::isLocalPlayer(AActor& actor) {
 
-	if (this->c_LocalPlayer.Pawn.PlayerState.getName() == actor.Pawn.PlayerState.getName())
+	if (this->c_LocalActor->Pawn.PlayerState.getName() == actor.Pawn.PlayerState.getName())
 		return true;
 
 	return false;
@@ -63,7 +65,7 @@ bool UWorld::isCrewMember(AActor& actor) {
 	std::string target_name = actor.Pawn.PlayerState.getName();
 
 	for (std::string& crew_actor : this->c_LocalCrewNames) {
-		if (target_name == crew_actor || target_name == this->c_LocalPlayer.Pawn.PlayerState.getName())
+		if (target_name == crew_actor || target_name == this->c_LocalActor->Pawn.PlayerState.getName())
 			return true;
 	}
 
@@ -92,7 +94,6 @@ void UWorld::refresh_BP_PlayerPirate_C() {
 	
 		if (this->c_BP_PlayerPirate_C.at(x).isDeleted())
 			deleteElementByIndex(this->c_BP_PlayerPirate_C, x);
-
 
 	}
 

@@ -12,7 +12,7 @@
 #include "includes.h"
 #include "AAthenaGameState.h"
 #include "UGameInstance.h"
-
+#include "AAthenaCharacter.h"
 
 class UWorld {
 
@@ -30,7 +30,8 @@ public:
 	// CACHED DATA
 
 	FGuid c_LocalCrewId;
-	AActor c_LocalPlayer;
+	ULocalPlayer* c_LocalPlayer = nullptr;
+	AAthenaCharacter* c_LocalActor = nullptr;
 	std::vector<AActor> c_BP_PlayerPirate_C;
 	std::vector<std::string> c_BP_PlayerPirate_CNames;
 	std::vector<AActor> c_LocalCrew; // includes localPlayer

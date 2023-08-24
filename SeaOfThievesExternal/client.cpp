@@ -55,29 +55,6 @@ void Client::init() {
 	std::cout << "ID: " << std::dec << p.t_Players.at(0).getId() << "\n";
 	std::cout << p.getShipTemplate() << "\n";
 
-	//test
-
-	/*
-
-	for (int x = 0; x < p_UWorld->t_Levels.size(); x++) {
-		for (int y = 0; y < p_UWorld->t_Levels.at(x).t_Actors.size(); y++) {
-			if (p_UWorld->t_Levels.at(x).t_Actors.at(y).getName() == "BP_PlayerPirate_C") {
-				std::cout << std::hex << p_UWorld->t_Levels.at(x).t_Actors.at(y).d_address << "\n";
-				
-				AActor actor = p_UWorld->t_Levels.at(x).t_Actors.at(y);
-
-				while (true) {
-					std::cout << std::hex << actor.p_address << "  ";
-					FVector ad = actor.RootComponent.getCoords();
-					std::cout << ad.x << "  " << ad.y << "  " << ad.z << "\n";
-					Sleep(50);
-				}
-			}
-		}
-		
-	}
-
-	*/
 
 	FRotation f = this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.PlayerCameraManager.getViewAngles();
 	std::cout << "LOCALPLAYERNAME :" << this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.Pawn.PlayerState.getName() << "\n";
@@ -89,19 +66,44 @@ void Client::init() {
 }
 
 
-// testing threads
-void Client::testing() {
-	
-	while (true) {
-		
+void Client::initLocalPlayer() {
+
+	// Init local player first
+	while (this->p_UWorld->c_LocalActor == nullptr) {
 		update();
-		std::cout << std::hex << this->p_UWorld->d_address << "   " << this->p_UWorld->t_Levels->d_dataptr << "\n";
-	
+		updateActors();
+		updateLocalPlayer();
 	}
 }
 
 
+// testing threads
+void Client::testing() {
+	
+	while (true) {
+		update();
+		updateActors();
+		updateLocalPlayer();
+
+		for (AActor& actor : this->p_UWorld->c_BP_PlayerPirate_C) {
+			std::cout << actor.Pawn.PlayerState.getName() << "  " << std::hex << actor.p_address << " | ";
+		}
+
+		this->p_UWorld->c_BP_PlayerPirate_C.clear();
+		std::cout << " ||  ";
+		if (this->p_UWorld->c_LocalActor != nullptr)
+			std::cout << "LOCAL: " << this->p_UWorld->c_LocalActor->p_address << "  " << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName() << "  " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.Pawn.PlayerState.getName() << "\n";
+
+		std::cout << "\n";
+
+	}
+
+}
+
+
 void Client::start() {
+
+	initLocalPlayer();
 
 	std::thread caching_thread(&Client::caching, this);
 
@@ -110,14 +112,20 @@ void Client::start() {
 	while (true) {
 
 		
+
 		if (!show) {
+
+			FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
 
 			std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
 				<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
-				<< " | Enemies: " << this->p_UWorld->c_Enemies.size()
+				//<< " | Enemies: " << this->p_UWorld->c_Enemies.size()
+				<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
+				<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
 				<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
-				<< " | t_localPlayers: " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->data.size()
-				<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
+				//<< " | t_localPlayers: " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->data.size()
+				//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
+				<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
 				<< std::flush;
 			
 
@@ -129,7 +137,7 @@ void Client::start() {
 
 		if (show) {
 
-			std::cout << this->p_UWorld->c_LocalPlayer.d_address << " || ";
+			std::cout << this->p_UWorld->c_LocalActor->d_address << " || ";
 
 			std::cout << "(" << this->p_UWorld->c_BP_PlayerPirate_C.size() << ")  ";
 
@@ -166,14 +174,13 @@ void Client::start() {
 
 void Client::caching() {
 
-	
 	std::thread fastCacher(&Client::fastCache, this);
 	std::thread slowCacher(&Client::slowCache, this);
 	std::thread extremeSlowCacher(&Client::extremeSlowCache, this);
-	std::thread worldupdater(&Client::update, this);
+	std::thread worldCacher(&Client::worldCache, this);
 
 
-	worldupdater.join();
+	worldCacher.join();
 	fastCacher.join();
 	slowCacher.join();
 	extremeSlowCacher.join();
@@ -185,9 +192,10 @@ void Client::fastCache() {
 	while (true) {
 
 		this->fastCache_lock.lock();
-		//std::cout << "ENTER FASTCACHE\n";
+
 		this->updateEnemies();
-		//std::cout << "FASTCACHE\n";
+		this->updateLocalPlayer();
+
 		this->fastCache_lock.unlock();
 		
 		Sleep(50);
@@ -199,16 +207,27 @@ void Client::fastCache() {
 
 
 
+void Client::worldCache() {
+
+	while (true) {
+
+		this->update();
+
+		Sleep(1000);
+	}
+
+}
+
+
 void Client::slowCache() {
 
 	while (true) {
 
 		this->slowCache_lock.lock();
-		//std::cout << "ENTER SLOWCACHE\n";
+
 		this->updateActors();
-		this->updateLocalPlayer();
 		this->updateLocalCrew();
-		//std::cout << "SLOWCACHE\n";
+
 		this->slowCache_lock.unlock();
 	
 		Sleep(100);
@@ -224,13 +243,10 @@ void Client::extremeSlowCache() {
 	while (true) {
 
 		this->extremeSlowCache_lock.lock();
-		//std::cout << "ENTER EXTREMESLOW\n";
-		this->p_UWorld->p_UGameInstance->t_LocalPlayers->update();
 		
 		this->updateCrewId();
-		//std::cout << "EXTREMESLOW\n";
 		this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->update();
-		//std::cout << "EXTREMESLOW\n";
+
 		this->extremeSlowCache_lock.unlock();
 		
 		Sleep(500);
@@ -244,49 +260,21 @@ void Client::extremeSlowCache() {
 
 void Client::update() {
 
-	while (true) {
-		
-		
-		
-		this->fastCache_lock.lock();
-		this->slowCache_lock.lock();
-		this->extremeSlowCache_lock.lock();
-		//std::cout << "ENTER UPDATE\n";
-		if (this->p_UWorld != nullptr) {
-				this->p_UWorld->update(Driver::base_address + Offsets::Process::UWorld);
-		}
-		
+	this->fastCache_lock.lock();
+	this->slowCache_lock.lock();
+	this->extremeSlowCache_lock.lock();
 
-		/*
-		if (this->p_UWorld != nullptr) {
-			if (Driver::read<UINT_PTR>(Driver::base_address + Offsets::Process::UWorld) != this->p_UWorld->d_address) 
-				this->p_UWorld->update(Driver::base_address + Offsets::Process::UWorld);
-		}
-		else {
-			this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
-		}
-
-		if (this->p_UWorld->p_UGameInstance->d_address != Driver::read<UINT_PTR>(this->p_UWorld->d_address + Offsets::UWorld::OwningWorldInstance)) {
-			this->p_UWorld->p_UGameInstance->update(this->p_UWorld->d_address + Offsets::UWorld::OwningWorldInstance);
-		}
-
-		if (this->p_UWorld->p_AAthenaGameState->d_address != Driver::read<UINT_PTR>(this->p_UWorld->d_address + Offsets::UWorld::GameState)) {
-			this->;
-		}
-
-		if (this->p_UWorld->t_Levels->d_dataptr != Driver::read<UINT_PTR>(this->p_UWorld->d_address + Offsets::UWorld::OwningWorldInstance)) {
-			delete p_UWorld->t_Levels;
-			this->p_UWorld->t_Levels = new TArray<ULevel>(this->p_UWorld->d_address + Offsets::UWorld::Levels, 0x8);
-		}
-		*/
-		//std::cout << "UPDATE\n";
-		this->fastCache_lock.unlock();
-		this->slowCache_lock.unlock();
-		this->extremeSlowCache_lock.unlock();
-		
-		Sleep(1000);
-
+	if (this->p_UWorld != nullptr) {
+		this->p_UWorld->update(Driver::base_address + Offsets::Process::UWorld);
 	}
+	else {
+		this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
+	}
+
+	this->fastCache_lock.unlock();
+	this->slowCache_lock.unlock();
+	this->extremeSlowCache_lock.unlock();
+
 
 }
 
@@ -295,12 +283,20 @@ void Client::update() {
 
 void Client::updateLocalPlayer() {
 
-	std::string localname = this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.Pawn.PlayerState.getName();
-
+	this->p_UWorld->p_UGameInstance->t_LocalPlayers->update();
+	
+	if (this->p_UWorld->c_LocalPlayer != nullptr)
+		this->p_UWorld->c_LocalPlayer->update(this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).p_address);
+	else
+		this->p_UWorld->c_LocalPlayer = new ULocalPlayer(this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0));
+	
+	
 	for (AActor actor : this->p_UWorld->c_BP_PlayerPirate_C) {
-		if (localname == actor.Pawn.PlayerState.getName()) {
-			this->p_UWorld->c_LocalPlayer = actor;
-			break;
+		if (this->p_UWorld->c_LocalPlayer->PlayerController.Pawn.PlayerState.getName() == actor.Pawn.PlayerState.getName()) {
+			if (this->p_UWorld->c_LocalActor == nullptr)
+				this->p_UWorld->c_LocalActor = new AAthenaCharacter(actor.p_address);
+			else
+				this->p_UWorld->c_LocalActor->update(actor.p_address);
 		}
 	}
 
@@ -360,16 +356,13 @@ void Client::updateLocalCrew() {
 
 void Client::updateActors() {
 
-	//std::cout << "CALL\n";
+
 	this->p_UWorld->refresh_BP_PlayerPirate_C();
-	//std::cout << "HERE\n";
+
 	this->p_UWorld->t_Levels->update();
-	//std::cout << "HERE2\n";
-	//std::cout << "MF: " << std::hex << this->p_UWorld->t_Levels.d_dataptr << "   ";
-	//std::cout << "SIZE: " << std::dec << p_UWorld->t_Levels.size() << "";
+
 
 	for (int x = 0; x < this->p_UWorld->t_Levels->size(); x++) {
-		
 
 		try {
 
@@ -385,14 +378,50 @@ void Client::updateActors() {
 				} catch (std::out_of_range e) { }
 
 			}
-			//std::cout << "for1 end\n";
 
 		} catch (std::out_of_range e) { }
 
 	}
-	//std::cout << "for2 end\n";
+
 
 }
+
+
+
+void Client::updateActorsTest() {
+
+	 
+	this->p_UWorld->refresh_BP_PlayerPirate_C();
+	 
+	this->p_UWorld->t_Levels->update();
+	 
+
+	for (int x = 0; x < this->p_UWorld->t_Levels->size(); x++) {
+
+		try {
+
+			this->p_UWorld->t_Levels->at(x).t_Actors.update();
+			for (int y = 0; y < this->p_UWorld->t_Levels->at(x).t_Actors.size(); y++) {
+
+				try {
+
+					AActor actor = this->p_UWorld->t_Levels->at(x).t_Actors.at(y);
+					if (actor.getClassName() == "BP_PlayerPirate_C")
+						this->p_UWorld->c_BP_PlayerPirate_C.push_back(actor);
+
+				}
+				catch (std::out_of_range e) {}
+
+			}
+
+		}
+		catch (std::out_of_range e) {}
+
+	}
+	 
+
+}
+
 
 
 
@@ -404,7 +433,7 @@ void Client::updateCrewId() {
 
 			std::string name = this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->at(x).t_Players.at(y).getName();
 
-			if (this->p_UWorld->c_LocalPlayer.Pawn.PlayerState.getName() == name) {
+			if (this->p_UWorld->c_LocalActor->Pawn.PlayerState.getName() == name) {
 
 				this->p_UWorld->c_LocalCrewId = this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->at(x).CrewId;
 

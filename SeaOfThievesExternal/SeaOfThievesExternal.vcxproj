@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AActor.h" />
+    <ClInclude Include="AAthenaCharacter.h" />
     <ClInclude Include="AAthenaGameState.h" />
     <ClInclude Include="ACrewService.h" />
     <ClInclude Include="Aimbot.h" />
@@ -149,16 +150,19 @@
     <ClInclude Include="info.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="nullmemory.h" />
+    <ClInclude Include="ProjectileWeapon.h" />
     <ClInclude Include="reversals.h" />
     <ClInclude Include="TArray.h" />
     <ClInclude Include="UGameInstance.h" />
     <ClInclude Include="ULevel.h" />
     <ClInclude Include="ULocalPlayer.h" />
     <ClInclude Include="USceneComponent.h" />
+    <ClInclude Include="UWieldedItemComponent.h" />
     <ClInclude Include="UWorld.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AActor.cpp" />
+    <ClCompile Include="AAthenaCharacter.cpp" />
     <ClCompile Include="AAthenaGameState.cpp" />
     <ClCompile Include="ACrewService.cpp" />
     <ClCompile Include="Aimbot.cpp" />
@@ -175,10 +179,12 @@
     <ClCompile Include="GNames.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
+    <ClCompile Include="ProjectileWeapon.cpp" />
     <ClCompile Include="UGameInstance.cpp" />
     <ClCompile Include="ULevel.cpp" />
     <ClCompile Include="ULocalPlayer.cpp" />
     <ClCompile Include="USceneComponent.cpp" />
+    <ClCompile Include="UWieldedItemComponent.cpp" />
     <ClCompile Include="UWorld.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
