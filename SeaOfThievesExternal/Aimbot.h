@@ -28,7 +28,7 @@ class Aimbot {
 
 private:
 
-	AimbotSettings settings;
+	AimbotSettings* settings = nullptr;
 
 	UWorld* p_UWorld = nullptr;
 
@@ -36,11 +36,9 @@ private:
 public:
 
 	Aimbot(){ }
-	Aimbot(UWorld* p_UWorld, AimbotSettings settings);
+	Aimbot(UWorld* p_UWorld, AimbotSettings* settings);
 
-	void init(AimbotSettings settings);
 	void start();
-	void updateSettings(AimbotSettings settings);
 	void setWorld(UWorld* ptr);
 
 	AActor getTarget();

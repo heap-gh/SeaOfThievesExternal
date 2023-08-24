@@ -7,6 +7,15 @@
 #include "UWorld.h"
 #include "Aimbot.h"
 
+struct ClientSettings {
+
+	bool aimbot = false;
+
+
+};
+
+
+
 class Client {
 
 
@@ -19,6 +28,8 @@ public:
 	UWorld* p_UWorld = nullptr;
 	Aimbot* p_Aimbot = nullptr;
 
+	ClientSettings* client_settings = nullptr;
+	AimbotSettings* aimbot_settings = nullptr;
 
 public:
 
@@ -29,6 +40,10 @@ public:
 	void start();
 	void update();
 	void initLocalPlayer();
+	void initGame();
+	void initAimbot();
+	void loadClientSettings();
+	void loadAimbotSettings();
 
 	void testing();
 

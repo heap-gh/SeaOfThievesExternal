@@ -17,63 +17,66 @@ Client::~Client() {
 }
 
 
-void Client::init() {
-	
-	Driver::process_id = Driver::get_process_id("SoTGame.exe");
-	
-	if (Driver::process_id == NULL)
-		exit(0);
-	
-	Driver::base_address = Driver::get_module_base_address("SoTGame.exe");
-	
-	if (Driver::base_address == NULL)
-		exit(0);
-	
-	GNames::d_address = Driver::read<UINT_PTR>(Driver::base_address + Offsets::Process::GNames);
+void Client::initGame() {
 
-	this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
-	
-	AimbotSettings settings;
+	while (Driver::process_id == NULL) {
+		Driver::process_id = Driver::process_id = Driver::get_process_id("SoTGame.exe");
+		Sleep(50);
+	}
 
-	this->p_Aimbot = new Aimbot(this->p_UWorld, settings);
+	while (Driver::base_address == NULL) {
+		Driver::base_address = Driver::get_module_base_address("SoTGame.exe");
+		Sleep(50);
+	}
+
 		
-	std::cout << "GNAMES ADDR: " << std::hex << GNames::d_address << "\n";
-	std::cout << "PROCID: " << Driver::process_id << "\nBASEADDR: " << std::hex << Driver::base_address << "\n";
-	std::cout << "UWORLD ADDR: " << p_UWorld->p_address << "\n";
-	std::cout << "AATHENAGAMESTATE ADDR: " << p_UWorld->p_AAthenaGameState->p_address << "\n";
-	std::cout << "ACREWSERVICE ADDR: " << p_UWorld->p_AAthenaGameState->p_ACrewService->p_address << "\n";
-	std::cout << "CREWS ADDR: " << p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->address << "\n";
-	std::cout << "CREWS SIZE: " << p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->size() << "\n";
-	std::cout << "LEVLES ADDR: " << p_UWorld->t_Levels->address << "\n";
-	std::cout << "FIRST ACTOR ADDR: " << p_UWorld->t_Levels->at(0).t_Actors.at(0).p_address << "\n";
-
-	FCrew p = p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->at(0);
-	//std::cout << "XD: " << p.b_address << "\n";
-	std::cout << "SIZE: " << p.t_Players.size() << "\n";
-	std::cout << "NAME: " << p.t_Players.at(0).getName() << "\n";
-	std::cout << "ADDR: " << p.t_Players.at(0).p_address << "\n";
-	std::cout << "ID: " << std::dec << p.t_Players.at(0).getId() << "\n";
-	std::cout << p.getShipTemplate() << "\n";
-
-
-	FRotation f = this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.PlayerCameraManager.getViewAngles();
-	std::cout << "LOCALPLAYERNAME :" << this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.Pawn.PlayerState.getName() << "\n";
-	std::cout << "VIEWANGLES: " << f.pitch << "  " << f.yaw << "  " << f.roll << "\n";
-
-	//testing();
-	start();
+	GNames::d_address = Driver::read<UINT_PTR>(Driver::base_address + Offsets::Process::GNames);
+	this->p_UWorld = new UWorld(Driver::base_address + Offsets::Process::UWorld);
 
 }
 
 
-void Client::initLocalPlayer() {
+void Client::initAimbot() {
 
-	// Init local player first
-	while (this->p_UWorld->c_LocalActor == nullptr) {
-		update();
-		updateActors();
-		updateLocalPlayer();
-	}
+	this->p_Aimbot = new Aimbot(this->p_UWorld, this->aimbot_settings);
+}
+
+
+void Client::loadClientSettings() {
+
+	// Load from file
+
+	this->client_settings = new ClientSettings();
+}
+
+
+void Client::loadAimbotSettings() {
+
+	// Load from file
+
+	this->aimbot_settings = new AimbotSettings();
+}
+
+
+
+void Client::init() {
+	
+	loadClientSettings();
+	loadAimbotSettings();
+
+	initGame();
+	initAimbot();
+		
+	std::cout << "GNAMES ADDR: " << std::hex << GNames::d_address << "\n";
+	std::cout << "PROCID: " << Driver::process_id << "\nBASEADDR: " << std::hex << Driver::base_address << "\n";
+	std::cout << "UWORLD ADDR: " << p_UWorld->p_address << "\n";
+	
+
+
+	//testing();
+
+	start();
+
 }
 
 
@@ -106,63 +109,71 @@ void Client::start() {
 	initLocalPlayer();
 
 	std::thread caching_thread(&Client::caching, this);
-
+	
 	bool show = false;
 	bool showThreads = false;
 	while (true) {
 
-		
+		if (true) {
 
-		if (!show) {
+			if (!show) {
 
-			FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
+				FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
 
-			std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
-				<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
-				//<< " | Enemies: " << this->p_UWorld->c_Enemies.size()
-				<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
-				<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
-				<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
-				//<< " | t_localPlayers: " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->data.size()
-				//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
-				<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
-				<< std::flush;
-			
+				std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
+					<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
+					//<< " | Enemies: " << this->p_UWorld->c_Enemies.size()
+					<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
+					<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
+					<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
+					//<< " | t_localPlayers: " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->data.size()
+					//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
+					<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
+					<< std::flush;
+
+
+			}
+
+
+			if (GetAsyncKeyState(VK_NUMPAD1) & 1)
+				show = !show;
+
+			if (show) {
+
+				std::cout << this->p_UWorld->c_LocalActor->d_address << " || ";
+
+				std::cout << "(" << this->p_UWorld->c_BP_PlayerPirate_C.size() << ")  ";
+
+				for (AActor& ac : this->p_UWorld->c_BP_PlayerPirate_C) {
+					std::cout << ac.Pawn.PlayerState.getName() << "    " << ac.p_address << "    ";
+				}
+				std::cout << "  ||  ";
+
+				for (AActor& ac : this->p_UWorld->c_LocalCrew) {
+					std::cout << ac.Pawn.PlayerState.getName() << "    ";
+				}
+
+				std::cout << "  ||  ";
+
+				for (AActor& ac : this->p_UWorld->c_Enemies) {
+					std::cout << ac.Pawn.PlayerState.getName() << "    ";
+				}
+
+
+				std::cout << "\n";
+
+
+			}
+
 
 		}
-			
-		
-		if (GetAsyncKeyState(VK_NUMPAD1) & 1)
-			show = !show;
-
-		if (show) {
-
-			std::cout << this->p_UWorld->c_LocalActor->d_address << " || ";
-
-			std::cout << "(" << this->p_UWorld->c_BP_PlayerPirate_C.size() << ")  ";
-
-			for (AActor& ac : this->p_UWorld->c_BP_PlayerPirate_C) {
-				std::cout << ac.Pawn.PlayerState.getName() << "    " << ac.p_address << "    ";
-			}
-			std::cout << "  ||  ";
-
-			for (AActor& ac : this->p_UWorld->c_LocalCrew) {
-				std::cout << ac.Pawn.PlayerState.getName() << "    ";
-			}
-
-			std::cout << "  ||  ";
-
-			for (AActor& ac : this->p_UWorld->c_Enemies) {
-				std::cout << ac.Pawn.PlayerState.getName() << "    ";
-			}
 
 
-			std::cout << "\n";
-			
-			
-		}
-		
-		Sleep(55);
+
+
+
+
+
 	}
 
 
@@ -198,7 +209,7 @@ void Client::fastCache() {
 
 		this->fastCache_lock.unlock();
 		
-		Sleep(50);
+		Sleep(20);
 
 	}
 
@@ -244,6 +255,7 @@ void Client::extremeSlowCache() {
 
 		this->extremeSlowCache_lock.lock();
 		
+		this->p_UWorld->p_UGameInstance->t_LocalPlayers->update();
 		this->updateCrewId();
 		this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->update();
 
@@ -282,8 +294,6 @@ void Client::update() {
 
 
 void Client::updateLocalPlayer() {
-
-	this->p_UWorld->p_UGameInstance->t_LocalPlayers->update();
 	
 	if (this->p_UWorld->c_LocalPlayer != nullptr)
 		this->p_UWorld->c_LocalPlayer->update(this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).p_address);
@@ -442,4 +452,15 @@ void Client::updateCrewId() {
 		}
 	}
 
+}
+
+
+void Client::initLocalPlayer() {
+
+	// Init local player first
+	while (this->p_UWorld->c_LocalActor == nullptr) {
+		update();
+		updateActors();
+		updateLocalPlayer();
+	}
 }

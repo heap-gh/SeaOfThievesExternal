@@ -18,8 +18,6 @@ class UWorld {
 
 public:
 
-	std::mutex lock;
-
 	UINT_PTR p_address;
 	UINT_PTR d_address;
 

@@ -114,13 +114,13 @@
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="UWieldedItemComponent.h">
-      <Filter>Header Files\SDK-Testfiles</Filter>
+      <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="ProjectileWeapon.h">
-      <Filter>Header Files\SDK-Testfiles</Filter>
+      <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="AAthenaCharacter.h">
-      <Filter>Header Files\SDK-Testfiles</Filter>
+      <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,13 +191,13 @@
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="UWieldedItemComponent.cpp">
-      <Filter>Source Files\SDK-Testfiles</Filter>
+      <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="ProjectileWeapon.cpp">
-      <Filter>Source Files\SDK-Testfiles</Filter>
+      <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="AAthenaCharacter.cpp">
-      <Filter>Source Files\SDK-Testfiles</Filter>
+      <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
