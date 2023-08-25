@@ -47,6 +47,7 @@ void Client::loadClientSettings() {
 	// Load from file
 
 	this->client_settings = new ClientSettings();
+	
 }
 
 
@@ -55,8 +56,21 @@ void Client::loadAimbotSettings() {
 	// Load from file
 
 	this->aimbot_settings = new AimbotSettings();
+	this->aimbot_settings->on = true;
 }
 
+
+
+void Client::activateAimbot() {
+
+	this->aimbot_settings->on = true;
+}
+
+
+void Client::deactivateAimbot(){
+
+	this->aimbot_settings->on = false;
+}
 
 
 void Client::init() {
@@ -106,84 +120,104 @@ void Client::testing() {
 
 void Client::start() {
 
-	initLocalPlayer();
-
-	std::thread caching_thread(&Client::caching, this);
 	
+	std::thread caching_thread(&Client::caching, this);
+	std::thread aimbot_thread(&Aimbot::start, this->p_Aimbot);
+
 	bool show = false;
 	bool showThreads = false;
+	bool showAngle = false;
+
 	while (true) {
 
-		if (true) {
+		if (1) {
 
-			if (!show) {
+			if (this->p_UWorld->initialized) {
 
-				FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
+				if (!show) {
 
-				std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
-					<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
-					//<< " | Enemies: " << this->p_UWorld->c_Enemies.size()
-					<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
-					<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
-					<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
-					//<< " | t_localPlayers: " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->data.size()
-					//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
-					<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
-					<< std::flush;
+					FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
+					FRotation angle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
+					FVector target_pos(375578.f, 319925.f, 104.3362f);
+					FRotation Target_angle = p_Aimbot->getTargetAngle(target_pos);
 
+					if (showAngle)
+						this->p_Aimbot->setAngle(Target_angle);
+
+					if (GetAsyncKeyState(VK_NUMPAD2) & 1)
+						showAngle = !showAngle;
+
+					/*
+					std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
+						<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
+						<< " | ANGLES: " << angle.pitch << " " << angle.yaw
+						<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
+						//<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
+						<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
+						<< " | target_angle: " << Target_angle.pitch << " " << Target_angle.yaw
+						//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
+						<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
+						<< std::flush;
+						*/
+
+				}
+
+
+				if (GetAsyncKeyState(VK_NUMPAD1) & 1)
+					show = !show;
+
+				if (show) {
+
+					std::cout << this->p_UWorld->c_LocalActor->d_address << " || ";
+
+					std::cout << "(" << this->p_UWorld->c_BP_PlayerPirate_C.size() << ")  ";
+
+					for (AActor& ac : this->p_UWorld->c_BP_PlayerPirate_C) {
+						std::cout << ac.Pawn.PlayerState.getName() << "    " << ac.p_address << "    ";
+					}
+					std::cout << "  ||  ";
+
+					for (AActor& ac : this->p_UWorld->c_LocalCrew) {
+						std::cout << ac.Pawn.PlayerState.getName() << "    ";
+					}
+
+					std::cout << "  ||  ";
+
+					for (AActor& ac : this->p_UWorld->c_Enemies) {
+						std::cout << ac.Pawn.PlayerState.getName() << "    ";
+					}
+
+
+					std::cout << "\n";
+
+
+				}
 
 			}
-
-
-			if (GetAsyncKeyState(VK_NUMPAD1) & 1)
-				show = !show;
-
-			if (show) {
-
-				std::cout << this->p_UWorld->c_LocalActor->d_address << " || ";
-
-				std::cout << "(" << this->p_UWorld->c_BP_PlayerPirate_C.size() << ")  ";
-
-				for (AActor& ac : this->p_UWorld->c_BP_PlayerPirate_C) {
-					std::cout << ac.Pawn.PlayerState.getName() << "    " << ac.p_address << "    ";
-				}
-				std::cout << "  ||  ";
-
-				for (AActor& ac : this->p_UWorld->c_LocalCrew) {
-					std::cout << ac.Pawn.PlayerState.getName() << "    ";
-				}
-
-				std::cout << "  ||  ";
-
-				for (AActor& ac : this->p_UWorld->c_Enemies) {
-					std::cout << ac.Pawn.PlayerState.getName() << "    ";
-				}
-
-
-				std::cout << "\n";
-
-
-			}
-
 
 		}
 
+		if (GetAsyncKeyState(VK_NUMPAD3) & 1)
+			this->aimbot_settings->on = !this->aimbot_settings->on;
 
 
 
-
-
+		Sleep(10);
 
 	}
 
 
 	if(caching_thread.joinable())
 		caching_thread.join();
+	if (aimbot_thread.joinable())
+		aimbot_thread.join();
 
 }
 
 
 void Client::caching() {
+
+	initLocalPlayer();
 
 	std::thread fastCacher(&Client::fastCache, this);
 	std::thread slowCacher(&Client::slowCache, this);
@@ -463,4 +497,7 @@ void Client::initLocalPlayer() {
 		updateActors();
 		updateLocalPlayer();
 	}
+
+	this->p_UWorld->initialized = true;
+
 }

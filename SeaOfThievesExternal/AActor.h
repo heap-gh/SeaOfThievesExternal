@@ -18,6 +18,8 @@ class AActor {
 
 public:
 
+	bool initialized = false;
+
 	UINT_PTR p_address;
 	UINT_PTR d_address;
 

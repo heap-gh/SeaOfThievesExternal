@@ -323,7 +323,21 @@ namespace Offsets
 		constexpr auto RegisteredInputComponents = 0xba0; // TArray<UInputComponent*>
 	}
 
-
+	namespace AProjectileWeapon
+	{
+		constexpr auto InventoryItem = 0x810; // UInventoryItemComponent*
+		constexpr auto ProjectileAimValidator = 0x818; // DelegateProperty
+		constexpr auto WeaponParameters = 0x828; // FProjectileWeaponParameters
+		constexpr auto State = 0xa30; // EProjectileWeaponState
+		constexpr auto AmmoLeft = 0xa34; // int32_t
+		constexpr auto AimSensitivityComponent = 0xa38; // UAimSensitivityComponent*
+		constexpr auto ProjectileWeaponType = 0xa50; // EProjectileWeaponType
+		constexpr auto MaxAcceptableAttackTimeStampDelta = 0xa54; // float
+		constexpr auto ShouldSendHitScanTelemetry = 0xa58; // bool
+		constexpr auto DistanceBeforeGravity = 0xa60; // float
+		constexpr auto NameplateVisibilityRangeExtensionFactorWhileAiming = 0xa64; // float
+		constexpr auto ShouldShowAmmoUI = 0xae0; // bool
+	}
 
 
 };

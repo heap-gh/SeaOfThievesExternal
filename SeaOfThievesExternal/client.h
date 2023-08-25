@@ -9,9 +9,7 @@
 
 struct ClientSettings {
 
-	bool aimbot = false;
-
-
+	
 };
 
 
@@ -47,13 +45,20 @@ public:
 
 	void testing();
 
+	// control client
+
+	void activateAimbot();
+	void deactivateAimbot();
+
+
+
+	// caching
+
 	void caching();
 	void fastCache();
 	void slowCache();
 	void extremeSlowCache();
 	void worldCache();
-
-	// caching
 
 	void updateCrewId();
 	void updateActors();
