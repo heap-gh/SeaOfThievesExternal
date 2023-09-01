@@ -104,16 +104,3 @@ bool FRotation::about (FRotation rot){
 
 }
 
-
-float FRotation::shortestAngle(float fromAngle, float toAngle) {
-	float angleDifference = toAngle - fromAngle;
-
-	while (angleDifference < -180.0f)
-		angleDifference += 360.0f;
-
-	while (angleDifference > 180.0f)
-		angleDifference -= 360.0f;
-
-	return angleDifference;
-
-}

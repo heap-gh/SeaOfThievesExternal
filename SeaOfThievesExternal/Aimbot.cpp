@@ -1,7 +1,9 @@
 
 #include "Aimbot.h"
 
-
+#define FLOATMAX  340282346638528859811704183484516925.f
+#define PI		  3.1415926535897932385f
+#define TO_DEG    57.295779513082f
 
 Aimbot::Aimbot(UWorld* p_UWorld, AimbotSettings* settings) {
 
@@ -32,6 +34,11 @@ void Aimbot::start() {
 	std::string			equipped_weapon_name = "";
 	ProjectileWeapon*	equipped_weapon = nullptr;
 
+	FVector target_pos;
+	FRotation localangle;
+	FRotation target_angle;
+	FRotation anglediff;
+
 	while (true) {
 
 		while (this->settings->on) {
@@ -46,11 +53,16 @@ void Aimbot::start() {
 				
 
 				while (target != nullptr && equipped_weapon->state() == AIMING && !target->isDeleted()) {
-
-					FRotation localangle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
-					FRotation angle = getTargetAngle(target->RootComponent.getCoords());
 					
-					//writeAngleBuffer(angle);
+					target_pos = target->RootComponent.getCoords();
+					localangle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
+					target_angle = getTargetAngle(target_pos);
+					anglediff = getAngleDiff(localangle, target_angle);
+
+					//std::cout << anglediff.yaw << "\n";
+
+					if ((std::abs(anglediff.yaw) <= this->settings->max_FOV) && (std::abs(anglediff.pitch) <= this->settings->max_FOV))
+						writeAngleBuffer(target_angle);
 
 				}
 
@@ -119,18 +131,62 @@ void Aimbot::disableAccess() {
 
 }
 
+FRotation Aimbot::getAngleDiff(FRotation& angle, FRotation& target_angle) {
+
+	FRotation diff = target_angle - angle;
 
 
-FRotation Aimbot::getTargetAngle(FVector target_vector) {
+	if (diff.pitch > 180.0f) {
+		diff.pitch -= 360.0f;
+	}
+	else if (diff.pitch < -180.0f) {
+		diff.pitch += 360.0f;
+	}
+
+	if (diff.yaw > 180.0f) {
+		diff.yaw -= 360.0f;
+	}
+	else if (diff.yaw < -180.0f) {
+		diff.yaw += 360.0f;
+	}
 
 
+	return diff;
+}
 
-	return FRotation();
+
+FRotation Aimbot::getTargetAngle(FVector& target_vector) {
+
+
+		FVector delta = target_vector - this->p_UWorld->c_LocalActor->RootComponent.getCoords();
+
+		float yaw = atan2f(delta.y, delta.x) * (180.0f / PI);
+		float pitch = atan2f(delta.z, sqrt(pow(delta.x, 2) + pow(delta.y, 2))) * (180.0f / PI);
+
+		if (yaw < 0.f) {
+			yaw += 360.0f;
+		}
+
+		if (pitch < 0.f) {
+			pitch += 360.0f;
+		}
+
+	return FRotation(pitch, yaw, 0.0f);
+
 }
 
 
 
-void Aimbot::writeAngleBuffer(FRotation target_angle) {
+void Aimbot::writeAngleBuffer(FRotation& target_angle) {
+
+	if (!isValidAngle(target_angle))
+		return;
+
+
+	Driver::write<float>(this->m_angle_buffer, target_angle.pitch);
+	Driver::write<float>(this->m_angle_buffer + 0x4, target_angle.yaw);
+	Driver::write<float>(this->m_angle_buffer + 0x8, target_angle.roll);
+
 
 	if (!this->access)
 		enableAccess();
@@ -139,10 +195,12 @@ void Aimbot::writeAngleBuffer(FRotation target_angle) {
 
 }
 
-bool Aimbot::isInvalidAngle(FRotation angle) {
+bool Aimbot::isValidAngle(FRotation& angle) {
 
-
-	return true;
+	if (((angle.pitch > 0.0f && angle.pitch < 80.f) || (angle.pitch < 360.f && angle.pitch > 290.f)) && ((angle.yaw > 0.0f) && (angle.yaw < 360.0f)))
+		return true;
+		
+	return false;
 }
 
 

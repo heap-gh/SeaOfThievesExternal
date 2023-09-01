@@ -57,6 +57,7 @@ void Client::loadAimbotSettings() {
 
 	this->aimbot_settings = new AimbotSettings();
 	this->aimbot_settings->on = true;
+	this->aimbot_settings->max_FOV = 70.f;
 }
 
 
@@ -131,6 +132,7 @@ void Client::start() {
 	
 	bool writeNew = false;
 	bool writeOld = false;
+	bool aim = false;
 
 	while (true) {
 
@@ -138,12 +140,16 @@ void Client::start() {
 
 			if (this->p_UWorld->initialized) {
 
+				FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
+				FRotation angle = this->p_UWorld->c_LocalPlayer->PlayerController.Pawn.Controller.getViewAngles();
+				FVector target_pos(-21942.7f, 375495.f, 110.006f);
+				FRotation Target_angle = p_Aimbot->getTargetAngle(target_pos);
+				FRotation anglediff = p_Aimbot->getAngleDiff(angle, Target_angle);
+
 				if (!show) {
 
-					FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
-					FRotation angle = this->p_UWorld->c_LocalPlayer->PlayerController.Pawn.Controller.getViewAngles();
-					FVector target_pos(375578.f, 319925.f, 80.3362f);
-					FRotation Target_angle = p_Aimbot->getTargetAngle(target_pos);
+			
+					
 
 					
 					std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
@@ -152,7 +158,7 @@ void Client::start() {
 						<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
 						//<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
 						<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
-						<< " | target_angle: " << Target_angle.pitch << " " << Target_angle.yaw
+						<< " | diff_angle: " << anglediff.pitch << " " << anglediff.yaw
 						//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
 						<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
 						<< std::flush;
@@ -165,9 +171,16 @@ void Client::start() {
 					show = !show;
 
 				
+				if (GetAsyncKeyState(VK_NUMPAD2) & 1) {
+					aim = !aim;
+				}
 
-
-
+				if (false) {
+					p_Aimbot->writeAngleBuffer(Target_angle);
+				}
+				else {
+					p_Aimbot->disableAccess();
+				}
 			
 
 
@@ -177,10 +190,10 @@ void Client::start() {
 
 		if (GetAsyncKeyState(VK_NUMPAD3) & 1)
 			this->aimbot_settings->on = !this->aimbot_settings->on;
+		
 
 
-
-		Sleep(10);
+		//Sleep(10);
 
 	}
 
