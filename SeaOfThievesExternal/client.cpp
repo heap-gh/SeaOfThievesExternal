@@ -97,22 +97,26 @@ void Client::init() {
 // testing threads
 void Client::testing() {
 	
+	bool writeNew = false;
+	bool writeOld = false;
+	
 	while (true) {
-		update();
-		updateActors();
-		updateLocalPlayer();
 
-		for (AActor& actor : this->p_UWorld->c_BP_PlayerPirate_C) {
-			std::cout << actor.Pawn.PlayerState.getName() << "  " << std::hex << actor.p_address << " | ";
+		if (GetAsyncKeyState(VK_NUMPAD2) & 1)
+			writeNew = true;
+
+		if (GetAsyncKeyState(VK_NUMPAD3) & 1)
+			writeOld = true;
+
+		if (writeNew) {
+			this->p_Aimbot->enableAccess();
+			writeNew = false;
 		}
 
-		this->p_UWorld->c_BP_PlayerPirate_C.clear();
-		std::cout << " ||  ";
-		if (this->p_UWorld->c_LocalActor != nullptr)
-			std::cout << "LOCAL: " << this->p_UWorld->c_LocalActor->p_address << "  " << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName() << "  " << this->p_UWorld->p_UGameInstance->t_LocalPlayers->at(0).PlayerController.Pawn.PlayerState.getName() << "\n";
-
-		std::cout << "\n";
-
+		if (writeOld) {
+			this->p_Aimbot->disableAccess();
+			writeOld = false;
+		}
 	}
 
 }
@@ -120,13 +124,13 @@ void Client::testing() {
 
 void Client::start() {
 
-	
 	std::thread caching_thread(&Client::caching, this);
 	std::thread aimbot_thread(&Aimbot::start, this->p_Aimbot);
 
 	bool show = false;
-	bool showThreads = false;
-	bool showAngle = false;
+	
+	bool writeNew = false;
+	bool writeOld = false;
 
 	while (true) {
 
@@ -137,17 +141,11 @@ void Client::start() {
 				if (!show) {
 
 					FVector coords = this->p_UWorld->c_LocalActor->RootComponent.getCoords();
-					FRotation angle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
-					FVector target_pos(375578.f, 319925.f, 104.3362f);
+					FRotation angle = this->p_UWorld->c_LocalPlayer->PlayerController.Pawn.Controller.getViewAngles();
+					FVector target_pos(375578.f, 319925.f, 80.3362f);
 					FRotation Target_angle = p_Aimbot->getTargetAngle(target_pos);
 
-					if (showAngle)
-						this->p_Aimbot->setAngle(Target_angle);
-
-					if (GetAsyncKeyState(VK_NUMPAD2) & 1)
-						showAngle = !showAngle;
-
-					/*
+					
 					std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
 						<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
 						<< " | ANGLES: " << angle.pitch << " " << angle.yaw
@@ -158,7 +156,7 @@ void Client::start() {
 						//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
 						<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
 						<< std::flush;
-						*/
+						
 
 				}
 
@@ -166,32 +164,12 @@ void Client::start() {
 				if (GetAsyncKeyState(VK_NUMPAD1) & 1)
 					show = !show;
 
-				if (show) {
-
-					std::cout << this->p_UWorld->c_LocalActor->d_address << " || ";
-
-					std::cout << "(" << this->p_UWorld->c_BP_PlayerPirate_C.size() << ")  ";
-
-					for (AActor& ac : this->p_UWorld->c_BP_PlayerPirate_C) {
-						std::cout << ac.Pawn.PlayerState.getName() << "    " << ac.p_address << "    ";
-					}
-					std::cout << "  ||  ";
-
-					for (AActor& ac : this->p_UWorld->c_LocalCrew) {
-						std::cout << ac.Pawn.PlayerState.getName() << "    ";
-					}
-
-					std::cout << "  ||  ";
-
-					for (AActor& ac : this->p_UWorld->c_Enemies) {
-						std::cout << ac.Pawn.PlayerState.getName() << "    ";
-					}
+				
 
 
-					std::cout << "\n";
 
+			
 
-				}
 
 			}
 

@@ -22,6 +22,7 @@ d_<name>			= dereferenced Pointer
 f_<name>			= FString
 b_<name>			= base address
 c_<name>			= cached data
+m_<name>			= memory address
 
 Local ViewAngles		 FRotation  f   = this->p_UWorld->p_UGameInstance->t_LocalPlayers.at(0).p_APlayerController->p_APlayerCameraManager->getViewAngles();
 PlayerPosition  		 FVector    ad  = p_UWorld->t_Levels.at(x).t_Actors.at(y).RootComponent.getCoords();

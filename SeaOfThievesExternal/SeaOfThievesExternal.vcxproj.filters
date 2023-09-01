@@ -122,6 +122,9 @@
     <ClInclude Include="AAthenaCharacter.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="AController.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -197,6 +200,9 @@
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="AAthenaCharacter.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="AController.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>

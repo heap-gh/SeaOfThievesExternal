@@ -1,7 +1,7 @@
 
 #include "math.h"
 
-#define INACCURACY 0.8f
+#define INACCURACY 0.5f
 
 FVector::FVector() {
 

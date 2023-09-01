@@ -12,9 +12,9 @@ namespace Offsets
 
 	namespace Process {
 
-		const UINT_PTR GNames = 0x84d58e8;
-		const UINT_PTR GObjects = 0x84d9f20;
-		const UINT_PTR UWorld = 0x859d350;
+		const UINT_PTR GNames = 0x85BF9B0;
+		const UINT_PTR GObjects = 0x85C3FF0;
+		const UINT_PTR UWorld = 0x86873F0;
 
 	}
 
@@ -337,6 +337,19 @@ namespace Offsets
 		constexpr auto DistanceBeforeGravity = 0xa60; // float
 		constexpr auto NameplateVisibilityRangeExtensionFactorWhileAiming = 0xa64; // float
 		constexpr auto ShouldShowAmmoUI = 0xae0; // bool
+	}
+
+
+	namespace AController
+	{
+		constexpr auto Pawn = 0x3d0; // APawn*
+		constexpr auto Character = 0x3e0; // ACharacter*
+		constexpr auto PlayerState = 0x3e8; // APlayerState*
+		constexpr auto TransformComponent = 0x3f0; // USceneComponent*
+		constexpr auto ControlRotation = 0x3f8; // FRotator
+		constexpr auto bAttachToPawn = 0x404; // char : 1
+		constexpr auto StateName = 0x410; // FName
+		constexpr auto OnInstigatedAnyDamage = 0x418; // FScriptMulticastDelegate
 	}
 
 

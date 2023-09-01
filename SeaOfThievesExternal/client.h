@@ -3,6 +3,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <iomanip>
+
 #include "includes.h"
 #include "UWorld.h"
 #include "Aimbot.h"

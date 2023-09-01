@@ -131,6 +131,7 @@
     <ClInclude Include="AActor.h" />
     <ClInclude Include="AAthenaCharacter.h" />
     <ClInclude Include="AAthenaGameState.h" />
+    <ClInclude Include="AController.h" />
     <ClInclude Include="ACrewService.h" />
     <ClInclude Include="Aimbot.h" />
     <ClInclude Include="APawn.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="AActor.cpp" />
     <ClCompile Include="AAthenaCharacter.cpp" />
     <ClCompile Include="AAthenaGameState.cpp" />
+    <ClCompile Include="AController.cpp" />
     <ClCompile Include="ACrewService.cpp" />
     <ClCompile Include="Aimbot.cpp" />
     <ClCompile Include="APawn.cpp" />
