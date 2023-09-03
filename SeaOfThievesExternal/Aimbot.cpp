@@ -55,14 +55,23 @@ void Aimbot::start() {
 				while (target != nullptr && equipped_weapon->state() == AIMING && !target->isDeleted()) {
 					
 					target_pos = target->RootComponent.getCoords();
+
+					AimCorrection(
+						this->p_UWorld->c_LocalActor->RootComponent.getVelocity(),
+						target->RootComponent.getVelocity(),
+						target_pos,
+						this->p_UWorld->c_LocalActor->RootComponent.getCoords().distance(target_pos),
+						equipped_weapon->getAmmoVelocity(),
+						1.f);
+
 					localangle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
 					target_angle = getTargetAngle(target_pos);
 					anglediff = getAngleDiff(localangle, target_angle);
 
-					//std::cout << anglediff.yaw << "\n";
-
 					if ((std::abs(anglediff.yaw) <= this->settings->max_FOV) && (std::abs(anglediff.pitch) <= this->settings->max_FOV))
 						writeAngleBuffer(target_angle);
+
+					
 
 				}
 
@@ -72,7 +81,7 @@ void Aimbot::start() {
 
 		}
 
-		Sleep(100);
+		Sleep(10);
 	}
 
 }
@@ -88,7 +97,6 @@ AActor* Aimbot::getTarget() {
 
 		for (AActor& actor : this->p_UWorld->c_Enemies) {
 
-
 			float distance = this->p_UWorld->c_LocalActor->RootComponent.getCoords().distance(actor.RootComponent.getCoords());
 			if (distance < target_distance) {
 				target_actor = &actor;
@@ -100,7 +108,6 @@ AActor* Aimbot::getTarget() {
 	}
 
 	// more if checks for settings
-
 
 
 	return target_actor;
@@ -159,9 +166,10 @@ FRotation Aimbot::getTargetAngle(FVector& target_vector) {
 
 
 		FVector delta = target_vector - this->p_UWorld->c_LocalActor->RootComponent.getCoords();
+		delta.z -= 15.f;
 
 		float yaw = atan2f(delta.y, delta.x) * (180.0f / PI);
-		float pitch = atan2f(delta.z, sqrt(pow(delta.x, 2) + pow(delta.y, 2))) * (180.0f / PI);
+		float pitch = atan2f(delta.z, sqrtf(powf(delta.x, 2) + powf(delta.y, 2))) * (180.0f / PI);
 
 		if (yaw < 0.f) {
 			yaw += 360.0f;
@@ -175,6 +183,17 @@ FRotation Aimbot::getTargetAngle(FVector& target_vector) {
 
 }
 
+
+
+void Aimbot::AimCorrection(FVector local_velocity, FVector enemy_velocity, FVector& target_vector, float distance, float bullet_speed, float gravity) {
+
+	target_vector = target_vector + enemy_velocity * (distance / fabs(bullet_speed));
+	target_vector = target_vector - local_velocity * (distance / fabs(bullet_speed));
+	float m_grav = fabs(gravity);
+	float m_dist = distance / fabs(bullet_speed);
+	target_vector.y += 0.5f * m_grav * m_dist * m_dist;
+
+}
 
 
 void Aimbot::writeAngleBuffer(FRotation& target_angle) {
@@ -207,65 +226,3 @@ bool Aimbot::isValidAngle(FRotation& angle) {
 
 
 
-/*
-
-
-void Aimbot::moveMouseBy(int deltaX, int deltaY) {
-	
-	INPUT input = {};
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_MOVE;
-	input.mi.dx = deltaX;
-	input.mi.dy = deltaY;
-
-	SendInput(1, &input, sizeof(INPUT));
-
-}
-
-void Aimbot::setAngle(FRotation target_angle) {
-
-	if (target_angle.pitch < -69.f || target_angle.pitch > 79.f)
-		return;
-
-	FRotation current_angles = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
-	FRotation step;
-
-	while (!current_angles.about(target_angle)) {
-
-		current_angles = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
-
-		step = current_angles - target_angle;
-
-		int rotYaw = 0.3f * step.yaw;
-		int rotPitch = 0.3f * step.pitch;
-
-		if (rotYaw == 0)
-			rotYaw = step.yaw > 0.0f ? 1 : -1;
-
-		if (rotPitch == 0)
-			rotPitch = step.pitch > 0.0f ? 1 : -1;
-
-		moveMouseBy(rotYaw, rotPitch);
-
-
-	}
-
-}
-
-
-
-FRotation Aimbot::getTargetAngle(FVector target_vector) {
-
-	target_vector.z -= 20.f;
-	FVector delta = target_vector - this->p_UWorld->c_LocalActor->RootComponent.getCoords();
-
-	float hyp = sqrt(pow(delta.x, 2) + pow(delta.y, 2));
-
-	float pitch = atan2f(delta.z, hyp) * TO_DEG;
-	float yaw = atan2f(delta.y, delta.x) * TO_DEG;
-
-	return { pitch, yaw, 0.0f };
-
-}
-
-*/

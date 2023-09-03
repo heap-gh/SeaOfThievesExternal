@@ -145,6 +145,7 @@ void Client::start() {
 				FVector target_pos(-21942.7f, 375495.f, 110.006f);
 				FRotation Target_angle = p_Aimbot->getTargetAngle(target_pos);
 				FRotation anglediff = p_Aimbot->getAngleDiff(angle, Target_angle);
+				FVector vel = this->p_UWorld->c_LocalActor->RootComponent.getVelocity();
 
 				if (!show) {
 
@@ -158,7 +159,7 @@ void Client::start() {
 						<< " | LocalAddr: " << std::hex << this->p_UWorld->c_LocalActor->p_address
 						//<< " | Wield: " << std::hex << this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName()
 						<< " | t_Levels: " << this->p_UWorld->t_Levels->data.size()
-						<< " | diff_angle: " << anglediff.pitch << " " << anglediff.yaw
+						<< " | velocity: " << vel.x << " " << vel.y << " " << vel.z
 						//<< " | t_Crews: " << this->p_UWorld->p_AAthenaGameState->p_ACrewService->t_Crews->data.size()
 						<< " | COORDS: " << coords.x << "  " << coords.y << "  " << coords.z
 						<< std::flush;

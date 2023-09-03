@@ -18,6 +18,10 @@ public:
 
 	EProjectileWeaponState state();
 
+	float getAmmoVelocity();
+
+
+
 };
 
 

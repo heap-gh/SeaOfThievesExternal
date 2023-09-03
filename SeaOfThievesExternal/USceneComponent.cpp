@@ -16,8 +16,8 @@ FVector USceneComponent::getCoords() {
 
 }
 
-// Code this
+
 FVector USceneComponent::getVelocity() {
 
-	return FVector();
+	return FVector(this->d_address + Offsets::USceneComponent::ComponentVelocity);
 }

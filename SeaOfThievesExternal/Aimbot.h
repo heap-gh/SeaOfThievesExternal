@@ -61,6 +61,7 @@ public:
 	void writeAngleBuffer(FRotation& target_angle);
 	bool isValidAngle(FRotation& angle);
 	FRotation getAngleDiff(FRotation& angle, FRotation& target_angle);
+	void AimCorrection(FVector local_velocity, FVector enemy_velocity, FVector& target_vector, float distance, float bullet_speed, float gravity);
 
 };
 

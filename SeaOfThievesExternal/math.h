@@ -40,6 +40,7 @@ public:
 		return { pitch + vec.pitch, yaw + vec.yaw, roll + vec.roll };
 	}
 
+
 };
 
 
@@ -60,8 +61,13 @@ public:
 
 	float distance(FVector to);
 
+	FVector operator* (float f) {
+		return { x * f, y * f, z * f };
+	}
 
-
+	FVector operator* (FVector vec) {
+		return { x * vec.x, y * vec.y, z * vec.z };
+	}
 
 	FVector operator+ (FVector vec) {
 		return { x + vec.x, y + vec.y, z + vec.z };
