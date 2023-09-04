@@ -19,7 +19,7 @@ public:
 	EProjectileWeaponState state();
 
 	float getAmmoVelocity();
-
+	void setIntoAimingDuration(INT32 duration);
 
 
 };

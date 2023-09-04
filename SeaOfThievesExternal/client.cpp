@@ -60,6 +60,7 @@ void Client::loadAimbotSettings() {
 	this->aimbot_settings->max_FOV = 70.f;
 	this->aimbot_settings->smooth_angle = false;
 	this->aimbot_settings->smooth_amount = 40.f;
+	this->aimbot_settings->fast_scope = true;
 
 }
 
@@ -153,9 +154,6 @@ void Client::start() {
 				if (!show) {
 
 			
-					
-
-					
 					std::cout << "\rBP_Pirate: " << this->p_UWorld->c_BP_PlayerPirate_C.size()
 						<< " | LocalCrew: " << this->p_UWorld->c_LocalCrew.size()
 						<< " | ANGLES: " << angle.pitch << " " << angle.yaw

@@ -338,6 +338,7 @@ namespace Offsets
 		constexpr auto NameplateVisibilityRangeExtensionFactorWhileAiming = 0xa64; // float
 		constexpr auto ShouldShowAmmoUI = 0xae0; // bool
 		constexpr auto Velocity = 0x8b8; // float
+		constexpr auto IntoAimingDuration = 0x834; // Int32
 
 	}
 

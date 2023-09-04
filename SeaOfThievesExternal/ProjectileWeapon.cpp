@@ -26,3 +26,9 @@ float ProjectileWeapon::getAmmoVelocity() {
 			
 	return Driver::read<float>(this->d_address + Offsets::AProjectileWeapon::Velocity);
 }
+
+
+void ProjectileWeapon::setIntoAimingDuration(INT32 duration) {
+
+	Driver::write<INT32>(this->d_address + Offsets::AProjectileWeapon::IntoAimingDuration, duration);
+}

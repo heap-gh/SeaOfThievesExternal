@@ -33,6 +33,7 @@ void Aimbot::start() {
 	AActor*				target = nullptr;
 	std::string			equipped_weapon_name = "";
 	ProjectileWeapon*	equipped_weapon = nullptr;
+	float				ammo_velocity = 0.0f;
 
 	FVector				target_pos;
 	FRotation			localangle;
@@ -51,12 +52,13 @@ void Aimbot::start() {
 			while ((equipped_weapon_name.find("BP_wpn") != std::string::npos) && equipped_weapon->state() == AIMING) {
 			
 				equipped_weapon_name = this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName();
-				target = getTarget();
-				
+				target				 = getTarget();
+				ammo_velocity		 = equipped_weapon->getAmmoVelocity();
+
 				if (this->settings->fast_scope)
-					int; // write 0x0 to in scope time
+					equipped_weapon->setIntoAimingDuration(0x0);
 				else
-					int; // write normal amount in scope time
+					equipped_weapon->setIntoAimingDuration(0x3E4CCCCD);
 
 				while (target != nullptr && equipped_weapon->state() == AIMING && !target->isDeleted()) {
 
@@ -67,21 +69,20 @@ void Aimbot::start() {
 						target->RootComponent.getVelocity(),
 						target_pos,
 						this->p_UWorld->c_LocalActor->RootComponent.getCoords().distance(target_pos),
-						equipped_weapon->getAmmoVelocity(),
+						ammo_velocity,
 						1.f);
 					
 					localangle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
 					target_angle = getTargetAngle(target_pos);
 					anglediff = getAngleDiff(localangle, target_angle);
 
-					if ((std::abs(anglediff.yaw) <= this->settings->max_FOV) && (std::abs(anglediff.pitch) <= this->settings->max_FOV)) {
+					if ((std::fabs(anglediff.yaw) < this->settings->max_FOV) && (std::fabs(anglediff.pitch) < this->settings->max_FOV)) {
 						
 						if (this->settings->smooth_angle) 
 							smoothAngle(localangle, target_angle, anglediff);
 						else 
 							writeAngleBuffer(target_angle);
 						
-
 						if (this->settings->auto_shoot)
 							shootBullet();
 
@@ -225,7 +226,7 @@ FRotation Aimbot::getTargetAngle(FVector& target_vector) {
 
 
 
-void Aimbot::AimCorrection(FVector local_velocity, FVector enemy_velocity, FVector& target_vector, float distance, float bullet_speed, float gravity) {
+void Aimbot::AimCorrection(FVector local_velocity, FVector enemy_velocity, FVector& target_vector, float distance, float& bullet_speed, float gravity) {
 
 	target_vector = target_vector + enemy_velocity * (distance / fabs(bullet_speed));
 	target_vector = target_vector - local_velocity * (distance / fabs(bullet_speed));
