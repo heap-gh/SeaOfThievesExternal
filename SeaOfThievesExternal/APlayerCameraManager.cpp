@@ -14,5 +14,5 @@ APlayerCameraManager::APlayerCameraManager(UINT_PTR p_address) {
 
 FRotation APlayerCameraManager::getViewAngles() {
 
-	return FRotation(this->d_address + Offsets::APlayerCameraManager::CameraCache);
+	return Driver::read<FRotation>(this->d_address + Offsets::APlayerCameraManager::CameraCache);
 }

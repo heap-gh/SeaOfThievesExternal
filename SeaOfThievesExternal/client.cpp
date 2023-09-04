@@ -58,6 +58,9 @@ void Client::loadAimbotSettings() {
 	this->aimbot_settings = new AimbotSettings();
 	this->aimbot_settings->on = true;
 	this->aimbot_settings->max_FOV = 70.f;
+	this->aimbot_settings->smooth_angle = false;
+	this->aimbot_settings->smooth_amount = 40.f;
+
 }
 
 
@@ -168,20 +171,7 @@ void Client::start() {
 				}
 
 
-				if (GetAsyncKeyState(VK_NUMPAD1) & 1)
-					show = !show;
-
-				
-				if (GetAsyncKeyState(VK_NUMPAD2) & 1) {
-					aim = !aim;
-				}
-
-				if (false) {
-					p_Aimbot->writeAngleBuffer(Target_angle);
-				}
-				else {
-					p_Aimbot->disableAccess();
-				}
+		
 			
 
 

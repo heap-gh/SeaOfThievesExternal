@@ -12,12 +12,12 @@ USceneComponent::USceneComponent(UINT_PTR p_address) {
 
 FVector USceneComponent::getCoords() {
 
-	return FVector(this->d_address + Offsets::USceneComponent::Coords);
+	return Driver::read<FVector>(this->d_address + Offsets::USceneComponent::Coords);
 
 }
 
 
 FVector USceneComponent::getVelocity() {
 
-	return FVector(this->d_address + Offsets::USceneComponent::ComponentVelocity);
+	return Driver::read<FVector>(this->d_address + Offsets::USceneComponent::ComponentVelocity);
 }

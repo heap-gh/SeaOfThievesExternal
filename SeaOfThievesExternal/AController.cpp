@@ -13,5 +13,5 @@ AController::AController(UINT_PTR p_address) {
 
 FRotation AController::getViewAngles() {
 
-	return FRotation(this->d_address + Offsets::AController::ControlRotation);
+	return Driver::read<FRotation>(this->d_address + Offsets::AController::ControlRotation);
 }

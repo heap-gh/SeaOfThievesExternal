@@ -34,12 +34,14 @@ void Aimbot::start() {
 	std::string			equipped_weapon_name = "";
 	ProjectileWeapon*	equipped_weapon = nullptr;
 
-	FVector target_pos;
-	FRotation localangle;
-	FRotation target_angle;
-	FRotation anglediff;
+	FVector				target_pos;
+	FRotation			localangle;
+	FRotation			target_angle;
+	FRotation			anglediff;
+
 
 	while (true) {
+
 
 		while (this->settings->on) {
 
@@ -51,9 +53,13 @@ void Aimbot::start() {
 				equipped_weapon_name = this->p_UWorld->c_LocalActor->WieldedItemComponent->CurrentlyWieldedItem->getClassName();
 				target = getTarget();
 				
+				if (this->settings->fast_scope)
+					int; // write 0x0 to in scope time
+				else
+					int; // write normal amount in scope time
 
 				while (target != nullptr && equipped_weapon->state() == AIMING && !target->isDeleted()) {
-					
+
 					target_pos = target->RootComponent.getCoords();
 
 					AimCorrection(
@@ -63,16 +69,24 @@ void Aimbot::start() {
 						this->p_UWorld->c_LocalActor->RootComponent.getCoords().distance(target_pos),
 						equipped_weapon->getAmmoVelocity(),
 						1.f);
-
+					
 					localangle = this->p_UWorld->c_LocalPlayer->PlayerController.PlayerCameraManager.getViewAngles();
 					target_angle = getTargetAngle(target_pos);
 					anglediff = getAngleDiff(localangle, target_angle);
 
-					if ((std::abs(anglediff.yaw) <= this->settings->max_FOV) && (std::abs(anglediff.pitch) <= this->settings->max_FOV))
-						writeAngleBuffer(target_angle);
+					if ((std::abs(anglediff.yaw) <= this->settings->max_FOV) && (std::abs(anglediff.pitch) <= this->settings->max_FOV)) {
+						
+						if (this->settings->smooth_angle) 
+							smoothAngle(localangle, target_angle, anglediff);
+						else 
+							writeAngleBuffer(target_angle);
+						
 
-					
+						if (this->settings->auto_shoot)
+							shootBullet();
 
+					}
+					 
 				}
 
 				disableAccess();
@@ -87,6 +101,30 @@ void Aimbot::start() {
 }
 
 
+void Aimbot::smoothAngle(FRotation& current_angle, FRotation& target_angle, FRotation& angle_diff) {
+
+	FRotation step = angle_diff / this->settings->smooth_amount;
+	int max_count = static_cast<int>(this->settings->smooth_amount);
+
+	for (int count = 0; count < max_count; count++) {
+		current_angle.add(step);
+		writeAngleBuffer(current_angle);
+	}
+
+	writeAngleBuffer(target_angle);
+
+}
+
+
+void Aimbot::shootBullet() {
+
+
+
+}
+
+
+
+
 AActor* Aimbot::getTarget() {
 
 	AActor* target_actor = nullptr;
@@ -95,9 +133,10 @@ AActor* Aimbot::getTarget() {
 
 		float target_distance = FLOATMAX;
 
-		for (AActor& actor : this->p_UWorld->c_Enemies) {
+		for (AActor& actor : this->p_UWorld->c_LocalCrew) {
 
 			float distance = this->p_UWorld->c_LocalActor->RootComponent.getCoords().distance(actor.RootComponent.getCoords());
+			
 			if (distance < target_distance) {
 				target_actor = &actor;
 				target_distance = distance;
@@ -119,9 +158,10 @@ void Aimbot::enableAccess() {
 	if (this->m_access_switch == 0)
 		return;
 
-	Driver::write_memory(this->m_access_switch, (UINT_PTR)&*this->new_opcode, 0xB); // lea rdx, [SoTGame.exe + 859d350 + 5F0]
-
-	this->access = true;
+	if (!this->access) {
+		Driver::write_memory(this->m_access_switch, (UINT_PTR)&*this->new_opcode, 0xB); // lea rdx, [SoTGame.exe + 859d350 + 5F0]
+		this->access = true;
+	}
 
 }
 
@@ -132,16 +172,16 @@ void Aimbot::disableAccess() {
 	if (this->m_access_switch == 0)
 		return;
 
-	Driver::write_memory(this->m_access_switch, (UINT_PTR)&*this->old_opcode, 0xB); // xorps xmm1, xmm1
-
-	this->access = false;
+	if (this->access) {
+		Driver::write_memory(this->m_access_switch, (UINT_PTR)&*this->old_opcode, 0xB); // xorps xmm1, xmm1
+		this->access = false;
+	}
 
 }
 
 FRotation Aimbot::getAngleDiff(FRotation& angle, FRotation& target_angle) {
 
 	FRotation diff = target_angle - angle;
-
 
 	if (diff.pitch > 180.0f) {
 		diff.pitch -= 360.0f;
@@ -201,14 +241,11 @@ void Aimbot::writeAngleBuffer(FRotation& target_angle) {
 	if (!isValidAngle(target_angle))
 		return;
 
-
 	Driver::write<float>(this->m_angle_buffer, target_angle.pitch);
 	Driver::write<float>(this->m_angle_buffer + 0x4, target_angle.yaw);
 	Driver::write<float>(this->m_angle_buffer + 0x8, target_angle.roll);
 
-
-	if (!this->access)
-		enableAccess();
+	enableAccess();
 
 
 
@@ -221,8 +258,4 @@ bool Aimbot::isValidAngle(FRotation& angle) {
 		
 	return false;
 }
-
-
-
-
 

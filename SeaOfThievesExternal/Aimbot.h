@@ -23,6 +23,10 @@ enum Focus {
 struct AimbotSettings {
 
 	bool on = false;
+	bool auto_shoot = false;
+	bool smooth_angle = false;
+	bool fast_scope = false;
+	float smooth_amount = 0.0f;
 	float max_FOV = 0.0f;
 	Focus focus_on = NEAREST;
 
@@ -62,6 +66,9 @@ public:
 	bool isValidAngle(FRotation& angle);
 	FRotation getAngleDiff(FRotation& angle, FRotation& target_angle);
 	void AimCorrection(FVector local_velocity, FVector enemy_velocity, FVector& target_vector, float distance, float bullet_speed, float gravity);
+	
+	void smoothAngle(FRotation& current_angle, FRotation& target_angle, FRotation& angle_diff);
+	void shootBullet();
 
 };
 

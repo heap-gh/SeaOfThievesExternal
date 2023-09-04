@@ -13,19 +13,15 @@ class FRotation {
 
 public:
 
-	UINT_PTR b_address;
-
-	float pitch, yaw;
-	float roll = 0.0f;
+	float pitch, yaw, roll;
 
 public:
 
 	FRotation();
 	FRotation(float pitch, float yaw, float roll);
-	FRotation(UINT_PTR b_address);
 
-	bool about(FRotation rot);
-	static bool about(float from, float to);
+
+	void add(FRotation& amount);
 
 	FRotation operator+= (FRotation vec) {
 		return { pitch += vec.pitch, yaw += vec.yaw, roll += vec.roll };
@@ -40,6 +36,11 @@ public:
 		return { pitch + vec.pitch, yaw + vec.yaw, roll + vec.roll };
 	}
 
+	FRotation operator/ (float f) {
+		return { pitch / f, yaw / f, roll / f };
+	}
+
+
 
 };
 
@@ -49,15 +50,12 @@ class FVector {
 
 public:
 
-	UINT_PTR b_address;
-
 	float x, y, z;
 
 public:
 
 	FVector();
 	FVector(float x, float y, float z);
-	FVector(UINT_PTR b_address);
 
 	float distance(FVector to);
 
