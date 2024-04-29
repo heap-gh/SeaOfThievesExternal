@@ -6,3 +6,4 @@ The driver hooks "NtOpenCompositionSurfaceSectionInfo" (mov rax / jmp rax), and 
 - Aimbot
 - Fast Aim
 
+The offsets in this software are outdated and won´t work for the newest version of Sea Of Thieves.
